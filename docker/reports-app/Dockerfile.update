@@ -1,0 +1,5 @@
+FROM repo.sofvie.com:5000/1.3.5.2:reports-app-2
+
+ENV REPORTS="/opt/reports"
+WORKDIR $REPORTS
+ADD data/reports-app-1.3.5.2.tar.gz $REPORTS/

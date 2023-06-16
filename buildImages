@@ -1,0 +1,71 @@
+#!/bin/bash
+#
+# this file is run after seedCode, and builds the container
+# images to that will be customised for each customer
+# from the baseClient repo
+
+# git branch is as follows VESRION
+#   ex: 1.1.4.5
+
+# NOTE: Branch must be checked out in the format:
+#     release-environment
+#     eg. `1.1.4.5`
+# VER is the code release
+
+VER=`git branch --show-current`
+DOCKER=$(pwd)/docker
+REPOSITORY=repo.sofvie.com:5000
+
+export DOCKER_BUILDKIT=1
+
+# This is a workaround if building on an Apple with the M1 chip
+# which is me
+ARCH=`uname -p`
+
+# ping -c 1 -t 2 repo.sofvie.com  > /dev/null 2> /dev/null
+# RESULT=$?
+#
+# if [ ! $RESULT -eq 0 ]; then
+#   echo Please disconnect VPN
+#   # exit
+# fi
+
+case $ARCH in
+  arm )
+    BUILD="buildx build --platform linux/amd64"
+    echo building linux/amd64 on ARM
+    ;;
+  * )
+    BUILD="build"
+    ;;
+esac
+
+# sanity check before we start the party
+echo "code release: $VER"
+
+####
+# removed for Jenkins integration
+# echo
+# echo "does this look correct?"
+# select yn in "Yes" "No"; do
+#   case $yn in
+#     Yes ) break;;
+#     No ) echo please checkout with correct name; exit;;
+#   esac
+# done
+
+VERSION=`echo $VER | cut -d"-" -f1`
+echo
+echo building images for release $VERSION
+echo
+
+# just need one per release, not per client
+cd $DOCKER
+for SERVICE in api app mobile reports-app resources sqllistener sso ; do
+  cd $DOCKER/$SERVICE
+  echo " ... building image for $SERVICE"
+  IMAGE=$REPOSITORY/$VERSION:$SERVICE-1
+  docker $BUILD -t $IMAGE .
+  # docker push $IMAGE
+  echo
+done
