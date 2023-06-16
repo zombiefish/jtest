@@ -1,15 +1,27 @@
-pipeline{
-    agent{
-        dockerfile{
-            Dockerfile
-            label 'api-test'
-            additionalBuildArgs  '--build-arg version=1.0.2'
-        }
+pipeline {
+    agent any
+    options {
+        skipStagesAfterUnstable()
     }
-    stages{
-        stage('Build API Image'){
-            steps{
-                sh 'docker build -t zombiefisf/jtest .'
+    stages {
+         stage('Clone repository') {
+            steps {
+                script{
+                checkout scm
+                }
+            }
+        }
+
+        stage('Build') {
+            steps {
+                script{
+                 app = docker.build("underwater")
+                }
+            }
+        }
+        stage('Test'){
+            steps {
+                 echo 'Empty'
             }
         }
     }
