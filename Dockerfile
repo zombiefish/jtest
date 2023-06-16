@@ -58,7 +58,7 @@ ADD data/*-key.pem /home/webadmin/keys/
 ADD data/api-1.3.5.2.tar.gz .
 
 # fix some of the source code files
-RUN sed -i 's/^  host:.*/  host: "db",/g' apps/language/api/views/translationimportutility3.0.js
+# RUN sed -i 's/^  host:.*/  host: "db",/g' apps/language/api/views/translationimportutility3.0.js
 
 # && sed -i "s/  kwargs\['port'\].*/kwargs\['port'\] = 3306/g" $BASE \
 # && sed -i "/PORT/d" $BASE
