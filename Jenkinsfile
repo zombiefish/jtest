@@ -19,5 +19,13 @@ pipeline {
                 }
             }
         }
+
+        stage('Push') {
+            steps {
+                script{
+                 sh 'docker push zombiefish/jtest'
+                }
+            }
+        }
     }
 }
