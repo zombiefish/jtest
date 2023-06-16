@@ -7,16 +7,10 @@ ENV API="/opt/api" \
     PYTHONPATH="/opt/api"
 
 # set up base container
-RUN apt-get update \
- && DEBIAN_FRONTEND=noninteractive apt-get install -y \
-     nginx apt-utils cargo uwsgi supervisor \
- && mkdir -p $API /var/log/uwsgi \
- && mkdir -p /home/webadmin/keys/
+RUN mkdir -p $API /var/log/uwsgi /home/webadmin/keys/
 
 WORKDIR $API
 COPY data/requirements.txt $API/
-
-RUN rm -f /etc/nginx/sites-enabled/default /etc/nginx/sites-available/default
 
 # update python modules
 RUN python3 -m venv $API \
@@ -27,7 +21,7 @@ RUN python3 -m venv $API \
 
 # Slim Build
 
-FROM python:3.8-slim AS runner
+FROM python:3.8-slim
 LABEL maintainer="Sofvie Inc."
 LABEL version="1.3.5.2"
 
@@ -47,7 +41,7 @@ COPY data/docker-entrypoint.sh data/schedule_report.py $API/
 
 RUN apt-get update \
  && DEBIAN_FRONTEND=noninteractive apt-get install -y \
-    nginx apt-utils cargo uwsgi supervisor \
+    nginx cargo uwsgi supervisor \
  && mkdir -p $API /var/log/uwsgi /home/webadmin/keys/ \
  && chmod +x $API/schedule_report.py \
  && rm -f /etc/nginx/sites-enabled/default \
