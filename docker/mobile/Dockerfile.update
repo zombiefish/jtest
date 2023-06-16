@@ -1,5 +1,0 @@
-FROM repo.sofvie.com:5000/1.3.5.2:mobile-3
-
-ENV WEB="/var/www/html"
-WORKDIR $WEB
-ADD data/mobile-1.3.5.2.tar.gz $WEB/

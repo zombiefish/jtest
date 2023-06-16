@@ -1,4 +1,0 @@
-FROM repo.sofvie.com:5000/1.3.5.2:sqllistener-1
-
-ENV SQLLISTENER "/opt/sqllistener"
-ADD data/sqllistener-1.3.5.2.tar.gz $SQLLISTENER/
